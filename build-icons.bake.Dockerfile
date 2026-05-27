@@ -1,0 +1,123 @@
+# syntax=docker/dockerfile:1
+FROM alpine:3.20 AS render
+
+RUN apk add --no-cache \
+        rsvg-convert \
+        icoutils \
+        bash \
+        libxml2-utils \
+        fontconfig \
+        font-roboto
+
+WORKDIR /work
+
+# Build args you can override from bake
+ARG SVG_DIR=svg
+
+# Bring in the SVGs from the build context
+COPY ${SVG_DIR}/ /work/svg/
+
+RUN <<'EOF'
+set -euo pipefail
+
+
+### Directories that need changed icons ###
+DESKTOP_1=/out/desktop-apps/win-linux/res/icons
+DESKTOP_2=/out/desktop-apps/package/common/linux/icons-eo
+DESKTOP_3=/out/desktop-apps/common/loginpage/res/img
+
+SERVER_1=/out/server/AdminPanel/client/src/assets
+
+PACKAGE_1=/out/document-server-package/common/documentserver-example/welcome/css
+
+INTEGRATION_1=/out/document-server-integration/web/documentserver-example/nodejs/public/images
+### /Directories that need changed icons ###
+
+
+mkdir -p "$DESKTOP_1" "$DESKTOP_2" "$DESKTOP_3" "$SERVER_1" "$PACKAGE_1" "$INTEGRATION_1"
+
+# --- HiDPI assets for the win/linux res/icons folder ----------------------
+
+render() {
+    local scale="$1" suffix="$2"
+    local w h
+    w=$(awk -v v="$width"  -v s="$scale" 'BEGIN { printf "%.0f", v * s }')
+    h=$(awk -v v="$height" -v s="$scale" 'BEGIN { printf "%.0f", v * s }')
+    rsvg-convert \
+        --width="$w" --height="$h" \
+        --keep-aspect-ratio \
+        --background-color=none \
+        "$src" \
+        -o "$DESKTOP_1/${out_base}${suffix}.png"
+}
+
+process_svg() {
+    local src="$1" out_base="$2"
+    local width height
+    width=$(xmllint  --xpath 'string(/*[local-name()="svg"]/@width)'  "$src")
+    height=$(xmllint --xpath 'string(/*[local-name()="svg"]/@height)' "$src")
+
+    render 1.00 ""
+    render 1.25 "@1.25x"
+    render 1.50 "@1.5x"
+    render 1.75 "@1.75x"
+}
+
+process_svg /work/svg/logo-large-dark.svg  logo-dark-eo
+process_svg /work/svg/logo-large-light.svg logo-light-eo
+
+# --- Linux app icons (square SVG → fixed pixel sizes) ---------------------
+
+render_linux_icons() {
+    local src="$1"
+    local size
+    for size in 16 24 32 48 64 128 256; do
+        rsvg-convert \
+            --width="$size" --height="$size" \
+            --keep-aspect-ratio \
+            --background-color=none \
+            "$src" \
+            -o "$DESKTOP_2/${size}x${size}.png"
+    done
+}
+
+render_linux_icons /work/svg/logo-light.svg
+
+render_square_ico() {
+    local src="$1" out_path="$2" size="$3"
+    local tmp_png=/tmp/render.png
+    rsvg-convert \
+        --width="$size" --height="$size" \
+        --keep-aspect-ratio \
+        --background-color=none \
+        "$src" \
+        -o "$tmp_png"
+    mkdir -p "$(dirname "$out_path")"
+    icotool -c -o "$out_path" "$tmp_png"
+    rm -f "$tmp_png"
+}
+
+render_square_ico /work/svg/logo-light.svg $DESKTOP_1/desktopeditors-eo.ico 75
+
+cp /work/svg/logo-large-dark.svg $SERVER_1/logo.svg
+cp /work/svg/logo-large-light.svg $SERVER_1/dark-logo_s.svg
+
+cp /work/svg/logo-large-dark.svg $PACKAGE_1/logo.svg
+cp /work/svg/logo-light.svg $PACKAGE_1/favicon_eo.svg
+
+cp /work/svg/logo-dark.svg $INTEGRATION_1/mobile-logo_eo.svg
+cp /work/svg/logo-light.svg $INTEGRATION_1/favicon_eo.svg
+cp /work/svg/logo-large-dark.svg $INTEGRATION_1/logo.svg
+
+cp /work/svg/splash.svg $DESKTOP_1/splash-eo.svg
+cp /work/svg/logo-large-light.svg $DESKTOP_1/logo-light-eo.svg
+cp /work/svg/logo-large-dark.svg $DESKTOP_1/logo-dark-eo.svg
+
+cp /work/svg/logo-dark.svg $DESKTOP_3/idx-logo-dark-eo.svg
+cp /work/svg/logo-light.svg $DESKTOP_3/idx-logo-light-eo.svg
+
+EOF
+
+# Export-only stage: only the generated files end up in the output
+FROM scratch AS export
+    COPY --from=render /out/ /
