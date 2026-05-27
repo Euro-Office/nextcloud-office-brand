@@ -14,11 +14,11 @@ brands/nextcloud-office-brand/
 ├── brand-server.hcl               # variables + target for the server build
 ├── build-icons.bake.Dockerfile    # rendering & placement logic (shared)
 └── svg/                           # SOURCE SVGs you maintain by hand
-    ├── logo-large-dark.svg        # wide logo (e.g. 114×20), dark theme
-    ├── logo-large-light.svg       # wide logo, light theme
+    ├── logo-large-dark.svg        # wide logo (best 250x50), dark theme
+    ├── logo-large-light.svg       # wide logo (best 250x50), light theme
     ├── logo-dark.svg              # square app icon, dark theme
     ├── logo-light.svg             # square app icon, light theme
-    └── splash.svg                 # splash-screen graphic
+    └── splash.svg                 # splash-screen graphic (best 500x250)
 ```
 
 The five SVGs in `svg/` are the only files you maintain by hand. Everything in `generated/` after a build is reproducible from them.
