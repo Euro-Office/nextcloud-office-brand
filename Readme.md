@@ -31,14 +31,17 @@ From the repository root:
 # Re-brand the desktop editors
 docker buildx bake \
     -f docker-bake.hcl \
-    -f brands/nextcloud-office-brand/brand-desktop.hcl
+    -f brands/nextcloud-office-brand/brand-desktop.hcl \
+    brand-icons $MAINTARGET
 
 # Re-brand the document server
 docker buildx bake \
     -f docker-bake.hcl \
-    -f brands/nextcloud-office-brand/brand-server.hcl
+    -f brands/nextcloud-office-brand/brand-server.hcl \
+    brand-icons $MAINTARGET
 ```
 
+where MAINTARGET is the target of the project you want to build.
 Each invocation produces a `generated/` directory next to the working directory containing a tree of files ready to be consumed by the next stage of the build. The output is configured by `output = ["type=local,dest=generated"]` in the bake target — change the `dest` if you'd like it written elsewhere.
 
 ## What gets generated
