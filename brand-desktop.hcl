@@ -1,5 +1,5 @@
 variable "BRANDING_DIR" {
-  default = "build/brands/nextcloud"
+  default = "build/brands/nextcloud-office-brand"
 }
 variable "COMPANY_NAME" {
   default = "Nextcloud Office"
