@@ -16,6 +16,7 @@ variable "PRODUCT_NAME" {
 
 target "brand-icons" {
   context           = "../${BRANDING_DIR_BASE}"
+  target            = "export"
   dockerfile-inline = ""
   dockerfile        = "build-icons.bake.Dockerfile"
 }
