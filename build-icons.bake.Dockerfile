@@ -9,6 +9,8 @@ RUN apk add --no-cache \
         fontconfig \
         font-roboto
 
+SHELL ["/bin/bash", "-c"]
+
 WORKDIR /work
 
 # Build args you can override from bake
@@ -17,7 +19,7 @@ ARG SVG_DIR=svg
 # Bring in the SVGs from the build context
 COPY ${SVG_DIR}/ /work/svg/
 
-RUN <<'EOF'
+RUN <<'EOF' 
 set -euo pipefail
 
 
