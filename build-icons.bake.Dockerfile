@@ -31,10 +31,41 @@ SERVER_1=/out/server/AdminPanel/client/src/assets
 PACKAGE_1=/out/document-server-package/common/documentserver-example/welcome/css
 
 INTEGRATION_1=/out/document-server-integration/web/documentserver-example/nodejs/public/images
+
+WIN_RES=/out/desktop-apps/win-linux/res/icons
+WIN_PKG=/out/desktop-apps/win-linux/package/windows/data
 ### /Directories that need changed icons ###
 
 
-mkdir -p "$DESKTOP_1" "$DESKTOP_2" "$DESKTOP_3" "$SERVER_1" "$PACKAGE_1" "$INTEGRATION_1"
+mkdir -p "$DESKTOP_1" "$DESKTOP_2" "$DESKTOP_3" "$SERVER_1" "$PACKAGE_1" "$INTEGRATION_1" "$WIN_RES" "$WIN_PKG"
+
+# The existing icotool call produces a single 75px layer. Windows scales
+# that for Explorer, the taskbar and alt-tab - each one blurry.
+render_multi_ico() {
+    local src="$1" out="$2"; shift 2
+    local pngs=() s
+    for s in "$@"; do
+        rsvg-convert --width="$s" --height="$s" --keep-aspect-ratio \
+            --background-color=none "$src" -o "/tmp/ico-$s.png"
+        pngs+=("/tmp/ico-$s.png")
+    done
+    mkdir -p "$(dirname "$out")"
+    icotool -c -o "$out" "${pngs[@]}"
+    rm -f "${pngs[@]}"
+}
+render_multi_ico /work/svg/logo-light.svg "$WIN_RES/desktopeditors-eo.ico" \
+    16 24 32 48 64 128 256
+
+# Inno Setup 6.5.2+ accepts PNG including transparency for WizardImageFile
+# and WizardSmallImageFile - no BMP, no ImageMagick needed. The 164:314
+# aspect ratio is preserved and scaled per DPI, so render larger than the
+# nominal size.
+rsvg-convert --width=328 --height=628 --keep-aspect-ratio \
+    --background-color=none /work/svg/logo-large-light.svg \
+    -o "$WIN_PKG/wizard-image.png"
+rsvg-convert --width=220 --height=220 --keep-aspect-ratio \
+    --background-color=none /work/svg/logo-light.svg \
+    -o "$WIN_PKG/wizard-image-small.png"
 
 # --- HiDPI assets for the win/linux res/icons folder ----------------------
 
