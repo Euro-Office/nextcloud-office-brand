@@ -30,14 +30,18 @@ From the repository root:
 ```bash
 # Re-brand the desktop editors
 docker buildx bake \
-    -f docker-bake.hcl \
-    -f brands/nextcloud-office-brand/brand-desktop.hcl \
+    -f build/docker-bake.hcl \
+    -f build/linux/docker-bake.hcl \
+    -f build/brands/nextcloud-office-brand/brand-desktop.hcl \
+    --set "desktop-linux.contexts.desktop-common=target:desktop-common" \
+    --set "*.context=." \
     brand-icons $MAINTARGET
 
 # Re-brand the document server
 docker buildx bake \
-    -f docker-bake.hcl \
-    -f brands/nextcloud-office-brand/brand-server.hcl \
+    -f build/docker-bake.hcl \
+    -f build/brands/nextcloud-office-brand/brand-server.hcl \
+    --set "*.context=." \
     brand-icons $MAINTARGET
 ```
 
