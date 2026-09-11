@@ -36,10 +36,14 @@ INTEGRATION_1=/out/document-server-integration/web/documentserver-example/nodejs
 
 WIN_RES=/out/desktop-apps/win-linux/res/icons
 WIN_PKG=/out/desktop-apps/win-linux/package/windows/data
+
+# Inno Setup wizard artwork (WizImage-* / WizSmallImage-*)
+INNO_RES=/out/desktop-apps/package/inno/res
 ### /Directories that need changed icons ###
 
 
-mkdir -p "$DESKTOP_1" "$DESKTOP_2" "$DESKTOP_3" "$SERVER_1" "$PACKAGE_1" "$INTEGRATION_1" "$WIN_RES" "$WIN_PKG"
+mkdir -p "$DESKTOP_1" "$DESKTOP_2" "$DESKTOP_3" "$SERVER_1" "$PACKAGE_1" \
+         "$INTEGRATION_1" "$WIN_RES" "$WIN_PKG" "$INNO_RES"
 
 # The existing icotool call produces a single 75px layer. Windows scales
 # that for Explorer, the taskbar and alt-tab - each one blurry.
@@ -58,12 +62,58 @@ render_multi_ico() {
 render_multi_ico /work/svg/logo-light.svg "$WIN_RES/desktopeditors-eo.ico" \
     16 24 32 48 64 128 256
 
-# Inno Setup 6.5.2+ accepts PNG including transparency for WizardImageFile
-# and WizardSmallImageFile - no BMP, no ImageMagick needed. The 164:314
-# aspect ratio is preserved and scaled per DPI, so render larger than the
-# nominal size.
-rsvg-convert --width=328 --height=628 --keep-aspect-ratio \
-    --background-color=none /work/svg/logo-large-light.svg \
+# --- Inno Setup wizard artwork -------------------------------------------
+#
+# Inno picks the layer closest to the current DPI out of the comma separated
+# list in the .iss, so every size below has to exist as its own file. The
+# names must stay exactly as they are - they are referenced by
+# WizardImageFile / WizardSmallImageFile.
+#
+# WizImage  : 164x314 base ratio, portrait splash  -> wizard-{light,dark}.svg
+# WizSmall  : square app logo, transparent         -> logo-{light,dark}.svg
+
+WIZ_SIZES=( 416x797 366x700 315x604 290x556 240x459 202x386 164x314 )
+WIZ_SMALL_SIZES=( 147 129 112 103 85 71 58 )
+
+render_wiz_images() {
+    local src="$1" variant="$2" spec w h
+    for spec in "${WIZ_SIZES[@]}"; do
+        w="${spec%x*}"
+        h="${spec#*x}"
+        # No --keep-aspect-ratio on purpose: the official sizes deviate from
+        # 164:314 by up to 0.3%, and fitting instead of filling would leave a
+        # transparent one pixel seam on the edge of an otherwise opaque image.
+        rsvg-convert \
+            --width="$w" --height="$h" \
+            --background-color=none \
+            "$src" \
+            -o "$INNO_RES/WizImage-${variant}-${spec}.png"
+    done
+}
+
+render_wiz_small_images() {
+    local src="$1" variant="$2" size
+    for size in "${WIZ_SMALL_SIZES[@]}"; do
+        rsvg-convert \
+            --width="$size" --height="$size" \
+            --keep-aspect-ratio \
+            --background-color=none \
+            "$src" \
+            -o "$INNO_RES/WizSmallImage-${variant}-${size}x${size}.png"
+    done
+}
+
+render_wiz_images       /work/svg/wizard-light.svg Light
+render_wiz_images       /work/svg/wizard-dark.svg  Dark
+render_wiz_small_images /work/svg/logo-light.svg   Light
+render_wiz_small_images /work/svg/logo-dark.svg    Dark
+
+# Older single-file wizard artwork under package/windows/data. Inno Setup
+# 6.5.2+ accepts PNG including transparency for WizardImageFile and
+# WizardSmallImageFile - no BMP, no ImageMagick needed. Drop this block if
+# the .iss only consumes the INNO_RES set above.
+rsvg-convert --width=328 --height=628 \
+    --background-color=none /work/svg/wizard-light.svg \
     -o "$WIN_PKG/wizard-image.png"
 rsvg-convert --width=220 --height=220 --keep-aspect-ratio \
     --background-color=none /work/svg/logo-light.svg \
