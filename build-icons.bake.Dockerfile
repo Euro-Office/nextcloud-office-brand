@@ -14,10 +14,12 @@ SHELL ["/bin/bash", "-c"]
 WORKDIR /work
 
 # Build args you can override from bake
-ARG SVG_DIR=svg
+ARG BRAND_DIR=.
 
 # Bring in the SVGs from the build context
-COPY ${SVG_DIR}/ /work/svg/
+COPY ${BRAND_DIR}/svg /work/svg/
+
+COPY ${BRAND_DIR}/config /work/config/
 
 RUN <<'EOF' 
 set -euo pipefail
@@ -46,6 +48,7 @@ UPDATER_ICONS=/out/desktop-apps/win-linux/extras/update-daemon/res/icons
 
 # Inno Setup wizard artwork (WizImage-* / WizSmallImage-*)
 INNO_RES=/out/desktop-apps/package/inno/res
+
 ### /Directories that need changed icons ###
 
 
@@ -199,6 +202,8 @@ cp /work/svg/logo-large-dark.svg $DESKTOP_1/logo-dark-eo.svg
 
 cp /work/svg/logo-dark.svg $DESKTOP_3/idx-logo-dark-eo.svg
 cp /work/svg/logo-light.svg $DESKTOP_3/idx-logo-light-eo.svg
+
+cp /work/config/branding.iss /out/desktop-apps/package/inno/branding.iss
 
 EOF
 

@@ -13,14 +13,14 @@ variable "PRODUCT_NAME" {
 #### Do not change below this line ####
 #######################################
 
-variable "SVG_DIR" {
-  default = "${BRANDING_DIR_BASE}/svg"
+variable "BRAND_DIR" {
+  default = "${BRANDING_DIR_BASE}"
 }
 
 target "brand-icons" {
   context           = "../../.."
   args = {
-    SVG_DIR = "${SVG_DIR}"
+    BRAND_DIR = "${BRAND_DIR}"
   }
   target            = "export"
   dockerfile-inline = ""
