@@ -35,7 +35,14 @@ PACKAGE_1=/out/document-server-package/common/documentserver-example/welcome/css
 INTEGRATION_1=/out/document-server-integration/web/documentserver-example/nodejs/public/images
 
 WIN_RES=/out/desktop-apps/win-linux/res/icons
-WIN_PKG=/out/desktop-apps/win-linux/package/windows/data
+
+# SetupIconFile in package/inno/common.iss resolves to this folder, and
+# ProjIcons.pro embeds the same file - this is the icon on the installer
+# title bar and taskbar button.
+PROJICONS=/out/desktop-apps/win-linux/extras/projicons/res/icons
+
+# APP_ICON_PATH in UpdateDaemon.pro
+UPDATER_ICONS=/out/desktop-apps/win-linux/extras/update-daemon/res/icons
 
 # Inno Setup wizard artwork (WizImage-* / WizSmallImage-*)
 INNO_RES=/out/desktop-apps/package/inno/res
@@ -43,7 +50,7 @@ INNO_RES=/out/desktop-apps/package/inno/res
 
 
 mkdir -p "$DESKTOP_1" "$DESKTOP_2" "$DESKTOP_3" "$SERVER_1" "$PACKAGE_1" \
-         "$INTEGRATION_1" "$WIN_RES" "$WIN_PKG" "$INNO_RES"
+         "$INTEGRATION_1" "$WIN_RES" "$PROJICONS" "$UPDATER_ICONS" "$INNO_RES"
 
 # The existing icotool call produces a single 75px layer. Windows scales
 # that for Explorer, the taskbar and alt-tab - each one blurry.
@@ -59,8 +66,19 @@ render_multi_ico() {
     icotool -c -o "$out" "${pngs[@]}"
     rm -f "${pngs[@]}"
 }
-render_multi_ico /work/svg/logo-light.svg "$WIN_RES/desktopeditors-eo.ico" \
-    16 24 32 48 64 128 256
+# The size list upstream ships in desktopeditors.ico - Windows picks a layer
+# per DPI scaling, and anything it has to resample itself looks soft.
+ICO_SIZES=( 16 20 24 28 30 32 36 40 48 56 60 64 72 80 96 256 )
+
+# Consumed through resources.qrc, which aliases it to app.ico
+render_multi_ico /work/svg/logo-light.svg "$WIN_RES/desktopeditors-eo.ico" "${ICO_SIZES[@]}"
+
+# These three are hardcoded as "desktopeditors.ico" by common.iss (SetupIconFile)
+# and by APP_ICON_PATH in ASCDocumentEditor.pro / ProjIcons.pro / UpdateDaemon.pro,
+# so they have to be overwritten under their original names.
+render_multi_ico /work/svg/logo-light.svg "$WIN_RES/desktopeditors.ico"       "${ICO_SIZES[@]}"
+render_multi_ico /work/svg/logo-light.svg "$PROJICONS/desktopeditors.ico"     "${ICO_SIZES[@]}"
+render_multi_ico /work/svg/logo-light.svg "$UPDATER_ICONS/desktopeditors.ico" "${ICO_SIZES[@]}"
 
 # --- Inno Setup wizard artwork -------------------------------------------
 #
@@ -108,16 +126,10 @@ render_wiz_images       /work/svg/wizard-dark.svg  Dark
 render_wiz_small_images /work/svg/logo-light.svg   Light
 render_wiz_small_images /work/svg/logo-dark.svg    Dark
 
-# Older single-file wizard artwork under package/windows/data. Inno Setup
-# 6.5.2+ accepts PNG including transparency for WizardImageFile and
-# WizardSmallImageFile - no BMP, no ImageMagick needed. Drop this block if
-# the .iss only consumes the INNO_RES set above.
-rsvg-convert --width=328 --height=628 \
-    --background-color=none /work/svg/wizard-light.svg \
-    -o "$WIN_PKG/wizard-image.png"
-rsvg-convert --width=220 --height=220 --keep-aspect-ratio \
-    --background-color=none /work/svg/logo-light.svg \
-    -o "$WIN_PKG/wizard-image-small.png"
+# NOTE: the wizard-image.png / wizard-image-small.png block under
+# win-linux/package/windows/data is gone. Those feed the dialogpicture*.bmp and
+# dialogicon*.bmp directives in package/inno/help.iss, and help.iss is not
+# included by common.iss - it is never compiled. Nothing read them.
 
 # --- HiDPI assets for the win/linux res/icons folder ----------------------
 
@@ -166,21 +178,10 @@ render_linux_icons() {
 
 render_linux_icons /work/svg/logo-light.svg
 
-render_square_ico() {
-    local src="$1" out_path="$2" size="$3"
-    local tmp_png=/tmp/render.png
-    rsvg-convert \
-        --width="$size" --height="$size" \
-        --keep-aspect-ratio \
-        --background-color=none \
-        "$src" \
-        -o "$tmp_png"
-    mkdir -p "$(dirname "$out_path")"
-    icotool -c -o "$out_path" "$tmp_png"
-    rm -f "$tmp_png"
-}
-
-render_square_ico /work/svg/logo-light.svg $DESKTOP_1/desktopeditors-eo.ico 75
+# NOTE: the old "render_square_ico ... desktopeditors-eo.ico 75" call used to sit
+# here. DESKTOP_1 and WIN_RES are the same folder, so it overwrote the multi-size
+# icon rendered above with a single 75px layer - exactly the blurriness the
+# render_multi_ico comment warns about. Dropped.
 
 cp /work/svg/logo-large-dark.svg $SERVER_1/logo.svg
 cp /work/svg/logo-large-light.svg $SERVER_1/dark-logo_s.svg
