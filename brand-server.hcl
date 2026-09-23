@@ -18,7 +18,7 @@ variable "BRAND_DIR" {
 }
 
 target "brand-icons" {
-  context           = "../../.."
+  context           = ".."
   args = {
     BRAND_DIR = "${BRAND_DIR}"
   }
