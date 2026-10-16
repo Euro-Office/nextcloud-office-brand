@@ -16,12 +16,13 @@ brands/nextcloud-office-brand/
 └── svg/                           # SOURCE SVGs you maintain by hand
     ├── logo-large-dark.svg        # wide logo (best 250x50), dark theme
     ├── logo-large-light.svg       # wide logo (best 250x50), light theme
-    ├── logo-dark.svg              # square app icon, dark theme
-    ├── logo-light.svg             # square app icon, light theme
+    ├── logo-dark.svg              # square glyph, dark theme
+    ├── logo-light.svg             # square glyph, light theme (tab icon, favicons, installer)
+    ├── app-icon.svg               # the application icon: rounded square, Nextcloud-blue gradient + white document glyph
     └── splash.svg                 # splash-screen graphic (best 500x250)
 ```
 
-The five SVGs in `svg/` are the only files you maintain by hand. Everything in `generated/` after a build is reproducible from them.
+The SVGs in `svg/` are the only files you maintain by hand. Everything in `generated/` after a build is reproducible from them.
 
 ## Usage
 
@@ -60,7 +61,7 @@ Four-step HiDPI ladder of each wide logo, rendered from the SVG's intrinsic dime
 - Plus a 75×75 Windows ICO: `desktopeditors-eo.ico`
 
 **Linux app icons** (`generated/desktop-apps/package/common/linux/icons-eo/`)
-Square PNGs at sizes 16, 24, 32, 48, 64, 128, 256 — rendered from `logo-light.svg`. These follow the hicolor icon theme naming (`16x16.png`, `24x24.png`, …).
+Square PNGs at sizes 16, 24, 32, 48, 64, 128, 256 — rendered from `app-icon.svg`. These follow the hicolor icon theme naming (`16x16.png`, `24x24.png`, …).
 
 **Login page assets** (`generated/desktop-apps/common/loginpage/res/img/`)
 SVG copies for the login page UI.
