@@ -74,14 +74,14 @@ render_multi_ico() {
 ICO_SIZES=( 16 20 24 28 30 32 36 40 48 56 60 64 72 80 96 256 )
 
 # Consumed through resources.qrc, which aliases it to app.ico
-render_multi_ico /work/svg/logo-light.svg "$WIN_RES/desktopeditors-eo.ico" "${ICO_SIZES[@]}"
+render_multi_ico /work/svg/app-icon.svg "$WIN_RES/desktopeditors-eo.ico" "${ICO_SIZES[@]}"
 
 # These three are hardcoded as "desktopeditors.ico" by common.iss (SetupIconFile)
 # and by APP_ICON_PATH in ASCDocumentEditor.pro / ProjIcons.pro / UpdateDaemon.pro,
 # so they have to be overwritten under their original names.
-render_multi_ico /work/svg/logo-light.svg "$WIN_RES/desktopeditors.ico"       "${ICO_SIZES[@]}"
-render_multi_ico /work/svg/logo-light.svg "$PROJICONS/desktopeditors.ico"     "${ICO_SIZES[@]}"
-render_multi_ico /work/svg/logo-light.svg "$UPDATER_ICONS/desktopeditors.ico" "${ICO_SIZES[@]}"
+render_multi_ico /work/svg/app-icon.svg "$WIN_RES/desktopeditors.ico"       "${ICO_SIZES[@]}"
+render_multi_ico /work/svg/app-icon.svg "$PROJICONS/desktopeditors.ico"     "${ICO_SIZES[@]}"
+render_multi_ico /work/svg/app-icon.svg "$UPDATER_ICONS/desktopeditors.ico" "${ICO_SIZES[@]}"
 
 # --- Inno Setup wizard artwork -------------------------------------------
 #
@@ -179,7 +179,7 @@ render_linux_icons() {
     done
 }
 
-render_linux_icons /work/svg/logo-light.svg
+render_linux_icons /work/svg/app-icon.svg
 
 # NOTE: the old "render_square_ico ... desktopeditors-eo.ico 75" call used to sit
 # here. DESKTOP_1 and WIN_RES are the same folder, so it overwrote the multi-size
