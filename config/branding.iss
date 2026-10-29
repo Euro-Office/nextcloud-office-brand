@@ -28,13 +28,17 @@
 ; Install path, Start menu group and uninstall entry
 #define APP_PATH                        str(sIntCompanyName + "\" + sIntProductName)
 #define UPD_PATH                        str(sIntProductName + "Updates")
-#define APP_REG_PATH                    str("Software\" + APP_PATH)
 #define APP_REG_UNINST_KEY              str(sCompanyName + " " + sProductName)
 
 ; File-association display names
 #define ASSC_APP_NAME                   str(sCompanyName)
 #define ASCC_REG_REGISTERED_APP_NAME    str(sCompanyName + " Editors")
 #define ASSOC_APP_FRIENDLY_NAME         str(sCompanyName + " Editors")
+
+; Left alone on purpose - APP_REG_PATH stays "Software\Euro-Office\DesktopEditors"
+; from defines.iss, because the app reads its settings (locale, CheckForUpdates,
+; ignoreAssocMsg, Capabilities, ...) from REG_GROUP_KEY "Euro-Office", which is
+; hard-coded in desktop-apps win-linux/src/defines.h.
 
 ; Left alone on purpose - changing these breaks upgrades from installed builds:
 ;   sUpgradeCode, APP_USER_MODEL_ID, APP_MUTEX_NAME, APPWND_CLASS_NAME,
