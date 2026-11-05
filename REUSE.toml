@@ -1,0 +1,13 @@
+version = 1
+
+[[annotations]]
+path = "**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Euro-Office contributors"
+SPDX-License-Identifier = "AGPL-3.0-only"
+
+[[annotations]]
+path = "svg/*.svg"
+precedence = "aggregate"
+SPDX-FileCopyrightText = ["Euro-Office contributors", "Google LLC"]
+SPDX-License-Identifier = "AGPL-3.0-only AND Apache-2.0"

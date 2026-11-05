@@ -137,3 +137,11 @@ brand-server.hcl   ──┘                │
 ```
 
 The `brand-icons` target runs in its own Alpine container with `rsvg-convert`, `icoutils`, `fontconfig`, and `font-roboto` installed. The `FROM scratch AS export` final stage means only the `/out/` tree (mounted to `generated/` on the host) leaves the container — no Alpine base, no tooling.
+
+## License
+
+AGPL-3.0-only, see [LICENSE](LICENSE), unless a file says otherwise ([REUSE.toml](REUSE.toml)).
+
+- The document glyph in `svg/` comes from [Google Material Symbols](https://github.com/google/material-design-icons) (Apache-2.0, see [LICENSES/Apache-2.0.txt](LICENSES/Apache-2.0.txt)).
+- `.github/workflows/conventional-commits.yml` is MIT, see its header.
+- The Nextcloud name and logo are trademarks. The licence grants no rights to use them.
