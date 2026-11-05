@@ -144,4 +144,4 @@ AGPL-3.0-only, see [LICENSE](LICENSE), unless a file says otherwise ([REUSE.toml
 
 - The document glyph in `svg/` comes from [Google Material Symbols](https://github.com/google/material-design-icons) (Apache-2.0, see [LICENSES/Apache-2.0.txt](LICENSES/Apache-2.0.txt)).
 - `.github/workflows/conventional-commits.yml` is MIT, see its header.
-- The Nextcloud name and logo are trademarks. The licence grants no rights to use them.
+- The Nextcloud name and logo are trademarks of Nextcloud GmbH. The licence grants no rights to use them.

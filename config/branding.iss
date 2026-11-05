@@ -20,7 +20,7 @@
 #define sAppPublisher                   "Nextcloud GmbH"
 #define sAppPublisherURL                "https://nextcloud.com/"
 #define sAppSupportURL                  "https://nextcloud.com/support/"
-#define sAppCopyright                   "© Ascensio System SIA, Euro-Office contributors. Licensed under AGPL-3.0"
+#define sAppCopyright                   "© Ascensio System SIA, Euro-Office contributors, Nextcloud GmbH. Licensed under AGPL-3.0"
 
 #define sAppIconName                    "Nextcloud Office"
 #define sOldAppIconName                 "Nextcloud Office Editors"
