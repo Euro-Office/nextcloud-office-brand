@@ -58,7 +58,10 @@ Four-step HiDPI ladder of each wide logo, rendered from the SVG's intrinsic dime
 - `logo-dark-eo.png`, `logo-dark-eo@1.25x.png`, `@1.5x`, `@1.75x`
 - `logo-light-eo.png`, `logo-light-eo@1.25x.png`, `@1.5x`, `@1.75x`
 - Plus copies of the source SVGs as `logo-dark-eo.svg`, `logo-light-eo.svg`, `splash-eo.svg`
-- Plus a 75×75 Windows ICO: `desktopeditors-eo.ico`
+- Plus a multi-size Windows ICO: `desktopeditors-eo.ico`
+
+**Windows exe icons** (`generated/desktop-apps/win-linux/{res,extras/projicons/res,extras/update-daemon/res}/icons/`)
+Multi-size ICOs rendered from `app-icon.svg`: `desktopeditors.ico` (exe, installer, updater), `menu.ico` ("Open with" menu on Windows 10) and `uninstall.ico` (app icon with a red badge, Start menu "Uninstall" shortcut).
 
 **Linux app icons** (`generated/desktop-apps/package/common/linux/icons-eo/`)
 Square PNGs at sizes 16, 24, 32, 48, 64, 128, 256 — rendered from `app-icon.svg`. These follow the hicolor icon theme naming (`16x16.png`, `24x24.png`, …).

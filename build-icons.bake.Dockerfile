@@ -83,6 +83,24 @@ render_multi_ico /work/svg/app-icon.svg "$WIN_RES/desktopeditors.ico"       "${I
 render_multi_ico /work/svg/app-icon.svg "$PROJICONS/desktopeditors.ico"     "${ICO_SIZES[@]}"
 render_multi_ico /work/svg/app-icon.svg "$UPDATER_ICONS/desktopeditors.ico" "${ICO_SIZES[@]}"
 
+# More icons compiled into DesktopEditors.exe (projicons/version.rc) that
+# still carry the upstream logo:
+#  - menu.ico (index 33): the ApplicationIcon _code.iss registers on Windows 10,
+#    shown next to the app name in Explorer's "Open with" menu
+#  - uninstall.ico (index 25): the Start menu "Uninstall" shortcut
+render_multi_ico /work/svg/app-icon.svg "$PROJICONS/menu.ico" "${ICO_SIZES[@]}"
+
+# The uninstall icon is the app icon with a red "x" badge. librsvg only loads
+# <image> files next to the referencing SVG, so the wrapper goes into svg/.
+cat > /work/svg/uninstall.svg <<'SVG'
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <image href="app-icon.svg" x="0" y="0" width="1024" height="1024"/>
+  <circle cx="760" cy="760" r="236" fill="#e9322d" stroke="#ffffff" stroke-width="40"/>
+  <path d="M676 676 844 844M844 676 676 844" stroke="#ffffff" stroke-width="64" stroke-linecap="round"/>
+</svg>
+SVG
+render_multi_ico /work/svg/uninstall.svg "$PROJICONS/uninstall.ico" "${ICO_SIZES[@]}"
+
 # --- Inno Setup wizard artwork -------------------------------------------
 #
 # Inno picks the layer closest to the current DPI out of the comma separated
